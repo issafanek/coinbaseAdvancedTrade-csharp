@@ -6,7 +6,7 @@
 
         public const string WebsocketUriSandbox = "wss://ws-feed-public.sandbox.pro.coinbase.com";
 
-        public const string ApiUri = "https://api.pro.coinbase.com";
+        public const string ApiUri = "https://api.coinbase.com";//"https://api.pro.coinbase.com";
 
         public const string ApiUriSandbox = "https://api-public.sandbox.pro.coinbase.com";
     }

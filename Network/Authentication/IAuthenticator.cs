@@ -8,7 +8,7 @@ namespace CoinbaseAdvancedTrade.Network.Authentication
 
         string UnsignedSignature { get; }
 
-        string Passphrase { get; }
+        //string Passphrase { get; }
 
         string ComputeSignature(
             HttpMethod httpMethod, 

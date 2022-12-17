@@ -18,12 +18,14 @@ namespace CoinbaseAdvancedTrade.Network.HttpClient
             CancellationToken cancellationToken)
         {
                 var result = await Client.SendAsync(httpRequestMessage, cancellationToken);
+                Console.WriteLine(result);
                 return result;
         }
 
         public async Task<string> ReadAsStringAsync(HttpResponseMessage httpRequestMessage)
         {
             var result = await httpRequestMessage.Content.ReadAsStringAsync();
+            Console.WriteLine(result);
             return result;
         }
     }

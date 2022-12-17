@@ -16,16 +16,16 @@ namespace CoinbaseAdvancedTrade.Network.HttpRequest
 
         private readonly IClock clock;
 
-        //private readonly bool sandBox;
+        private readonly bool sandBox;
 
         public HttpRequestMessageService(
             IAuthenticator authenticator,
-            IClock clock)//,
-            //bool sandBox)
+            IClock clock,
+            bool sandBox)
         {
             this.authenticator = authenticator;
             this.clock = clock;
-            //this.sandBox = sandBox;
+            this.sandBox = sandBox;
         }
 
         public HttpRequestMessage CreateHttpRequestMessage(
@@ -33,9 +33,12 @@ namespace CoinbaseAdvancedTrade.Network.HttpRequest
             string requestUri,
             string contentBody = "")
         {
-            var apiUri = ApiUris.ApiUri;//sandBox
-                //? ApiUris.ApiUriSandbox
-                //: ApiUris.ApiUri;
+            var apiUri = this.sandBox
+                ? ApiUris.ApiUriSandbox
+                : ApiUris.ApiUri;
+
+            Console.WriteLine(new Uri(new Uri(apiUri), requestUri));
+
 
             var requestMessage = new HttpRequestMessage(httpMethod, new Uri(new Uri(apiUri), requestUri))
             {
@@ -44,7 +47,9 @@ namespace CoinbaseAdvancedTrade.Network.HttpRequest
                     : new StringContent(contentBody, Encoding.UTF8, "application/json")
             };
 
-            var timeStamp = clock.GetTime().ToTimeStamp();
+            //var timeStamp = clock.GetTime().ToTimeStamp();
+            var timeStamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+
 
             if (authenticator == null)
             {
@@ -56,6 +61,8 @@ namespace CoinbaseAdvancedTrade.Network.HttpRequest
             var signedSignature = authenticator.ComputeSignature(httpMethod, authenticator.UnsignedSignature, timeStamp, requestUri, contentBody);
 
             AddHeaders(requestMessage, signedSignature, timeStamp, true);
+
+            Console.WriteLine(requestMessage.ToString());
             return requestMessage;
         }
 
@@ -65,7 +72,7 @@ namespace CoinbaseAdvancedTrade.Network.HttpRequest
             double timeStamp,
             bool includeAuthentication)
         {
-            httpRequestMessage.Headers.Add("User-Agent", "CoinbaseProClient");
+            httpRequestMessage.Headers.Add("User-Agent", "CoinbaseAdvancedTradeClient");
 
             if (!includeAuthentication)
             {
@@ -75,7 +82,7 @@ namespace CoinbaseAdvancedTrade.Network.HttpRequest
             httpRequestMessage.Headers.Add("CB-ACCESS-KEY", authenticator.ApiKey);
             httpRequestMessage.Headers.Add("CB-ACCESS-TIMESTAMP", timeStamp.ToString("F0", CultureInfo.InvariantCulture));
             httpRequestMessage.Headers.Add("CB-ACCESS-SIGN", signedSignature);
-            httpRequestMessage.Headers.Add("CB-ACCESS-PASSPHRASE", authenticator.Passphrase);
+            //httpRequestMessage.Headers.Add("CB-ACCESS-PASSPHRASE", authenticator.Passphrase);
         }
     }
 }

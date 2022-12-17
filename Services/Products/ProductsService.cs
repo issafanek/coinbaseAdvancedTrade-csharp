@@ -29,32 +29,32 @@ namespace CoinbaseAdvancedTrade.Services.Products
 
         public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
-            return await SendServiceCall<IEnumerable<Product>>(HttpMethod.Get, "/products");
+            return (await SendServiceCall<ProductsListResponse>(HttpMethod.Get, "/api/v3/brokerage/products")).products;
+        }
+
+        public async Task<Product> GetSingleProductAsync(string productId)
+        {
+            return await SendServiceCall<Product>(HttpMethod.Get, $"/api/v3/brokerage/products/{productId}");
         }
 
         public async Task<ProductsOrderBookResponse> GetProductOrderBookAsync(
             string productId,
             ProductLevel productLevel = ProductLevel.One)
         {
-            var productsOrderBookJsonResponse = await SendServiceCall<ProductsOrderBookJsonResponse>(HttpMethod.Get, $"/products/{productId}/book/?level={(int)productLevel}").ConfigureAwait(false);
+            var productsOrderBookJsonResponse = await SendServiceCall<ProductsOrderBookJsonResponse>(HttpMethod.Get, $"/api/v3/brokerage/products/{productId}/book/?level={(int)productLevel}").ConfigureAwait(false);
             var productOrderBookResponse = ConvertProductOrderBookResponse(productsOrderBookJsonResponse, productLevel);
 
             return productOrderBookResponse;
         }
 
-        public async Task<Product> GetSingleProductAsync(string productId)
-        {
-            return await SendServiceCall<Product>(HttpMethod.Get, $"/products/{productId}");
-        }
-
         public async Task<ProductTicker> GetProductTickerAsync(string productId)
         {
-            return await SendServiceCall<ProductTicker>(HttpMethod.Get, $"/products/{productId}/ticker").ConfigureAwait(false);
+            return await SendServiceCall<ProductTicker>(HttpMethod.Get, $"/api/v3/brokerage/products/{productId}/ticker").ConfigureAwait(false);
         }
 
         public async Task<ProductStats> GetProductStatsAsync(string productId)
         {
-            return await SendServiceCall<ProductStats>(HttpMethod.Get, $"/products/{productId}/stats").ConfigureAwait(false);
+            return await SendServiceCall<ProductStats>(HttpMethod.Get, $"/api/v3/brokerage/products/{productId}/stats").ConfigureAwait(false);
         }
 
         public async Task<IList<IList<ProductTrade>>> GetTradesAsync(
@@ -62,7 +62,7 @@ namespace CoinbaseAdvancedTrade.Services.Products
             int limit = 100,
             int numberOfPages = 0)
         {
-            var httpResponseMessage = await SendHttpRequestMessagePagedAsync<ProductTrade>(HttpMethod.Get, $"/products/{productId}/trades?limit={limit}", numberOfPages: numberOfPages);
+            var httpResponseMessage = await SendHttpRequestMessagePagedAsync<ProductTrade>(HttpMethod.Get, $"/api/v3/brokerage/products/{productId}/trades?limit={limit}", numberOfPages: numberOfPages);
 
             return httpResponseMessage;
         }
@@ -128,7 +128,7 @@ namespace CoinbaseAdvancedTrade.Services.Products
                 new KeyValuePair<string, string>("end", isoEnd),
                 new KeyValuePair<string, string>("granularity", granularity.ToString()));
 
-            return await SendServiceCall<IList<Candle>>(HttpMethod.Get, $"/products/{productId}/candles" + queryString).ConfigureAwait(false);
+            return await SendServiceCall<IList<Candle>>(HttpMethod.Get, $"/api/v3/brokerage/products/{productId}/candles" + queryString).ConfigureAwait(false);
         }
 
         private ProductsOrderBookResponse ConvertProductOrderBookResponse(
