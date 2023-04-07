@@ -111,7 +111,13 @@ namespace CoinbaseAdvancedTrade.Services.Products
                 }
             } while (batchStart > start);
 
-            return candleList;
+            var reversedCandleList = new List<Candle>();
+            for(int i=candleList.Count-1; i>=0;i--)
+            {
+                reversedCandleList.Add(candleList[i]);
+            }
+
+            return reversedCandleList;
         }
         private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
@@ -132,7 +138,8 @@ namespace CoinbaseAdvancedTrade.Services.Products
             CandleListResponse response = await SendServiceCall<CandleListResponse>(HttpMethod.Get, $"/api/v3/brokerage/products/{productId}/candles" + queryString).ConfigureAwait(false);
             //System.Console.WriteLine(response.candles[0].Open);
             IList<Candle> Candles = new List<Candle>();
-            for(int i= response.candles.Count - 1; i>=0; i--)
+            //for(int i= response.candles.Count - 1; i>=0; i--)
+            for(int i= 0; i<response.candles.Count-1; i++)
             {
                 var candle = response.candles[i];
                 Candles.Add(new Candle
