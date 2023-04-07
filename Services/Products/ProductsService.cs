@@ -113,6 +113,7 @@ namespace CoinbaseAdvancedTrade.Services.Products
 
             return candleList;
         }
+        private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         private async Task<IList<Candle>> GetHistoricRatesAsync(
             string productId,
@@ -120,15 +121,32 @@ namespace CoinbaseAdvancedTrade.Services.Products
             DateTime end,
             int granularity)
         {
-            var isoStart = start.ToString("yyyy-MM-ddTHH:mm:ss.fffK");
-            var isoEnd = end.ToString("yyyy-MM-ddTHH:mm:ss.fffK");
+            var isoStart = ((Int32)(DateExtensions.ToTimeStamp(start))).ToString();//start.ToString("yyyy-MM-ddTHH:mm:ss.fffK");
+            var isoEnd = ((Int32)(DateExtensions.ToTimeStamp(end))).ToString();//end.ToString("yyyy-MM-ddTHH:mm:ss.fffK");
 
             var queryString = queryBuilder.BuildQuery(
                 new KeyValuePair<string, string>("start", isoStart),
                 new KeyValuePair<string, string>("end", isoEnd),
-                new KeyValuePair<string, string>("granularity", granularity.ToString()));
+                new KeyValuePair<string, string>("granularity", "1"));//granularity.ToString()));
 
-            return await SendServiceCall<IList<Candle>>(HttpMethod.Get, $"/api/v3/brokerage/products/{productId}/candles" + queryString).ConfigureAwait(false);
+            CandleListResponse response = await SendServiceCall<CandleListResponse>(HttpMethod.Get, $"/api/v3/brokerage/products/{productId}/candles" + queryString).ConfigureAwait(false);
+            //System.Console.WriteLine(response.candles[0].Open);
+            IList<Candle> Candles = new List<Candle>();
+            for(int i= response.candles.Count - 1; i>=0; i--)
+            {
+                var candle = response.candles[i];
+                Candles.Add(new Candle
+                {
+                    Time = UnixEpoch.AddSeconds(candle.Time),
+                    Low = candle.Low,
+                    High = candle.High,
+                    Close = candle.Close,
+                    Volume = candle.Volume,
+                    Open = candle.Open
+                });
+            }
+
+            return Candles;//await SendServiceCall<IList<Candle>>(HttpMethod.Get, $"/api/v3/brokerage/products/{productId}/candles" + queryString).ConfigureAwait(false);
         }
 
         private ProductsOrderBookResponse ConvertProductOrderBookResponse(

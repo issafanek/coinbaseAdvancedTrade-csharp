@@ -4,7 +4,28 @@ using Newtonsoft.Json;
 
 namespace CoinbaseAdvancedTrade.Services.Products.Models
 {
-    [JsonConverter(typeof(CandleConverter))]
+    //[JsonConverter(typeof(CandleConverter))]
+    public class CandleIntermediate
+    {
+        [JsonProperty("start")]
+        public int Time { get; set; }
+
+        [JsonProperty("low")]
+        public decimal? Low { get; set; }
+
+        [JsonProperty("high")]
+        public decimal? High { get; set; }
+
+        [JsonProperty("open")]
+        public decimal? Open { get; set; }
+
+        [JsonProperty("close")]
+        public decimal? Close { get; set; }
+
+        [JsonProperty("volume")]
+        public decimal Volume { get; set; }
+    }
+    
     public class Candle
     {
         [JsonProperty(Order = 1)]
