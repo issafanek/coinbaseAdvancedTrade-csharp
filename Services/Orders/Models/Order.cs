@@ -7,34 +7,18 @@ namespace CoinbaseAdvancedTrade.Services.Orders.Models
 {
     public class Order
     {
-        public Guid? ClientOid { get; set; }
+        [JsonProperty("client_order_id")]
+        public string OrderID { get; set; }
 
-        [JsonConverter(typeof(StringEnumConverter))]
-        public OrderSide Side { get; set; }
-
-        public decimal? Size { get; set; }
-
-        public decimal? Funds { get; set; }
-
-        public decimal? Price { get; set; }
-
-        [JsonConverter(typeof(StringEnumConverter))]
-        public StopType? Stop { get; set; }
-
-        public decimal? StopPrice { get; set; }
-
-        [JsonProperty("type")]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public OrderType OrderType { get; set; }
-
+        [JsonProperty("product_id")]
         public string ProductId { get; set; }
 
+        [JsonProperty("side")]
         [JsonConverter(typeof(StringEnumConverter))]
-        public TimeInForce TimeInForce { get; set; }
+        public OrderSide? Side { get; set; }
 
-        [JsonConverter(typeof(StringEnumConverter))]
-        public GoodTillTime CancelAfter { get; set; }
+        [JsonProperty("order_configuration")]
+        public OrderConfiguration? OrderConfiguration { get; set; }
 
-        public bool PostOnly { get; set; }
     }
 }

@@ -7,50 +7,49 @@ namespace CoinbaseAdvancedTrade.Services.Orders.Models.Responses
 {
     public class OrderResponse
     {
-        public Guid Id { get; set; }
-
-        public decimal Price { get; set; }
-
-        public decimal Size { get; set; }
-
-        public string ProductId { get; set; }
-
+        [JsonProperty("success")]
+        bool Success {get; set;}
         [JsonConverter(typeof(StringEnumConverter))]
-        public OrderSide Side { get; set; }
+        [JsonProperty("failure_reason")]
+        public FailureReason FailureReason { get; set; }
 
-        public string Stp { get; set; }
+        [JsonProperty("order_id")]
+        public Guid OrderId { get; set; }
+        [JsonProperty("success_response")]
+        public OrderSuccessResponse? SuccessResponse {get; set;}
+        [JsonProperty("error_response")]
+        public OrderErrorResponse? ErrorResponse {get; set;}
+        [JsonProperty("order_configuration")]
+        public OrderConfiguration? OrderConfiguration {get; set;}
+    }
 
-        [JsonProperty("type")]
+    public class OrderSuccessResponse
+    {
+         [JsonProperty("order_id")]
+        public string? OrderId { get; set; }
+        [JsonProperty("product_id")]
+        public string? ProductId { get; set; }
+        [JsonProperty("side")]
         [JsonConverter(typeof(StringEnumConverter))]
-        public OrderType OrderType { get; set; }
+        public OrderSide? Side { get; set; }
+        [JsonProperty("client_order_id")]
+        public string? ClientOrderId { get; set; }
+    }
 
+    public class OrderErrorResponse
+    {
+        [JsonProperty("error")]
         [JsonConverter(typeof(StringEnumConverter))]
-        public TimeInForce TimeInForce { get; set; }
-
-        public bool PostOnly { get; set; }
-
-        public DateTime CreatedAt { get; set; }
-
-        public DateTime DoneAt { get; set; }
-
-        public string DoneReason { get; set; }
-
-        public decimal FillFees { get; set; }
-
-        public decimal FilledSize { get; set; }
-
-        public decimal ExecutedValue { get; set; }
-
+        public OrderError? Error { get; set; }
+        [JsonProperty("message")]
+        public string? Message { get; set; }
+        [JsonProperty("error_details")]
+        public string? ErrorDetails { get; set; }
+        [JsonProperty("preview_failure_reason")]
         [JsonConverter(typeof(StringEnumConverter))]
-        public OrderStatus Status { get; set; }
-
-        public bool Settled { get; set; }
-
-        public decimal SpecifiedFunds { get; set; }
-
-        public decimal StopPrice { get; set; }
-
+        public PreviewFailureReason? PreviewFailureReason { get; set; }
+         [JsonProperty("new_order_failure_reason")]
         [JsonConverter(typeof(StringEnumConverter))]
-        public StopType Stop { get; set; }
+        public NewOrderFailureReason? NewOrderFailureReason { get; set; }
     }
 }

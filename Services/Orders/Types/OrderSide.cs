@@ -4,9 +4,11 @@ namespace CoinbaseAdvancedTrade.Services.Orders.Types
 {
     public enum OrderSide
     {
-        [EnumMember(Value = "buy")]
+        [EnumMember(Value = "BUY")]
         Buy,
-        [EnumMember(Value = "sell")]
-        Sell
+        [EnumMember(Value = "SELL")]
+        Sell,
+        [EnumMember(Value = "UNKOWN_ORDER_SIDE")]
+        Unknown
     }
 }

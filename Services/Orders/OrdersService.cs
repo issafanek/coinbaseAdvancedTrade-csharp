@@ -31,108 +31,118 @@ namespace CoinbaseAdvancedTrade.Services.Orders
             OrderSide side,
             string productId,
             decimal amount,
-            MarketOrderAmountType amountType = MarketOrderAmountType.Size,
             Guid? clientOid = null)
         {
+            if(clientOid == null)
+            {
+                clientOid = System.Guid.NewGuid();
+            }
+
+            Market_IOC marketOrderConfiguration = new Market_IOC();
+            if(side == OrderSide.Buy)
+            {
+                marketOrderConfiguration.QuoteSize = amount;
+            }
+            else
+            {
+                marketOrderConfiguration.BaseSize = amount;
+            }
+
             return await PlaceOrderAsync(new Order
             {
-                Side = side,
+                OrderID = ((Guid)clientOid).ToString(),
                 ProductId = productId,
-                OrderType = OrderType.Market,
-                ClientOid = clientOid,
-                Funds = amountType == MarketOrderAmountType.Funds
-                    ? amount
-                    : (decimal?)null,
-                Size = amountType == MarketOrderAmountType.Size
-                    ? amount
-                    : (decimal?)null
+                Side = side,
+                OrderConfiguration = new OrderConfiguration{
+                    Market_IOC = marketOrderConfiguration
+                }
             });
         }
 
-        public async Task<OrderResponse> PlaceLimitOrderAsync(
-            OrderSide side,
-            string productId,
-            decimal size,
-            decimal price,
-            TimeInForce timeInForce = TimeInForce.Gtc,
-            bool postOnly = true,
-            Guid? clientOid = null)
-        {
-            var order = new Order
-            {
-                Side = side,
-                ProductId = productId,
-                OrderType = OrderType.Limit,
-                Price = price,
-                Size = size,
-                TimeInForce = timeInForce,
-                PostOnly = postOnly,
-                ClientOid = clientOid
-            };
+        // public async Task<OrderResponse> PlaceLimitOrderAsync(
+        //     OrderSide side,
+        //     string productId,
+        //     decimal size,
+        //     decimal price,
+        //     TimeInForce timeInForce = TimeInForce.Gtc,
+        //     bool postOnly = true,
+        //     Guid? clientOid = null)
+        // {
+        //     var order = new Order
+        //     {
+        //         Side = side,
+        //         ProductId = productId,
+        //         OrderType = OrderType.Limit,
+        //         Price = price,
+        //         Size = size,
+        //         TimeInForce = timeInForce,
+        //         PostOnly = postOnly,
+        //         ClientOid = clientOid
+        //     };
 
-            return await PlaceOrderAsync(order);
-        }
+        //     return await PlaceOrderAsync(order);
+        // }
 
-        public async Task<OrderResponse> PlaceLimitOrderAsync(
-            OrderSide side,
-            string productId,
-            decimal size,
-            decimal price,
-            GoodTillTime cancelAfter,
-            bool postOnly = true,
-            Guid? clientOid = null)
-        {
-            var order = new Order
-            {
-                Side = side,
-                ProductId = productId,
-                OrderType = OrderType.Limit,
-                Price = price,
-                Size = size,
-                TimeInForce = TimeInForce.Gtt,
-                CancelAfter = cancelAfter,
-                PostOnly = postOnly,
-                ClientOid = clientOid
-            };
+        // public async Task<OrderResponse> PlaceLimitOrderAsync(
+        //     OrderSide side,
+        //     string productId,
+        //     decimal size,
+        //     decimal price,
+        //     GoodTillTime cancelAfter,
+        //     bool postOnly = true,
+        //     Guid? clientOid = null)
+        // {
+        //     var order = new Order
+        //     {
+        //         Side = side,
+        //         ProductId = productId,
+        //         OrderType = OrderType.Limit,
+        //         Price = price,
+        //         Size = size,
+        //         TimeInForce = TimeInForce.Gtt,
+        //         CancelAfter = cancelAfter,
+        //         PostOnly = postOnly,
+        //         ClientOid = clientOid
+        //     };
 
-            return await PlaceOrderAsync(order);
-        }
+        //     return await PlaceOrderAsync(order);
+        // }
 
-        public async Task<OrderResponse> PlaceStopOrderAsync(
-            OrderSide side,
-            string productId,
-            decimal size,
-            decimal limitPrice,
-            decimal stopPrice,
-            Guid? clientOid = null)
-        {
-            var order = new Order
-            {
-                Side = side,
-                OrderType = OrderType.Limit,
-                ProductId = productId,
-                Price = limitPrice,
-                Stop = side == OrderSide.Buy
-                    ? StopType.Entry
-                    : StopType.Loss,
-                StopPrice = stopPrice,
-                Size = size,
-                ClientOid = clientOid
-            };
+        // public async Task<OrderResponse> PlaceStopOrderAsync(
+        //     OrderSide side,
+        //     string productId,
+        //     decimal size,
+        //     decimal limitPrice,
+        //     decimal stopPrice,
+        //     Guid? clientOid = null)
+        // {
+        //     var order = new Order
+        //     {
+        //         Side = side,
+        //         OrderType = OrderType.Limit,
+        //         ProductId = productId,
+        //         Price = limitPrice,
+        //         Stop = side == OrderSide.Buy
+        //             ? StopType.Entry
+        //             : StopType.Loss,
+        //         StopPrice = stopPrice,
+        //         Size = size,
+        //         ClientOid = clientOid
+        //     };
 
-            return await PlaceOrderAsync(order);
-        }
+        //     return await PlaceOrderAsync(order);
+        // }
 
         private async Task<OrderResponse> PlaceOrderAsync(Order order)
         {
-            return await SendServiceCall<OrderResponse>(HttpMethod.Post, "/orders", JsonConfig.SerializeObject(order)).ConfigureAwait(false);
+            return await SendServiceCall<OrderResponse>(HttpMethod.Post, "/api/v3/brokerage/orders", JsonConfig.SerializeObject(order)).ConfigureAwait(false);
         }
 
         public async Task<CancelOrderResponse> CancelAllOrdersAsync()
         {
             return new CancelOrderResponse
             {
-                OrderIds = await SendServiceCall<IEnumerable<Guid>>(HttpMethod.Delete, "/orders").ConfigureAwait(false)
+                OrderIds = await SendServiceCall<IEnumerable<Guid>>(HttpMethod.Delete, "/api/v3/brokerage/orders").ConfigureAwait(false)
             };
         }
 
@@ -140,7 +150,7 @@ namespace CoinbaseAdvancedTrade.Services.Orders
         {
             return new CancelOrderResponse
             {
-                OrderIds = new[] { await SendServiceCall<Guid>(HttpMethod.Delete, $"/orders/{id}") }
+                OrderIds = new[] { await SendServiceCall<Guid>(HttpMethod.Delete, $"/api/v3/brokerage/orders/{id}") }
             };
         }
 
@@ -149,7 +159,7 @@ namespace CoinbaseAdvancedTrade.Services.Orders
             int limit = 100,
             int numberOfPages = 0)
         {
-            var httpResponseMessage = await SendHttpRequestMessagePagedAsync<OrderResponse>(HttpMethod.Get, $"/orders?limit={limit}&status={orderStatus.GetEnumMemberValue()}", numberOfPages: numberOfPages);
+            var httpResponseMessage = await SendHttpRequestMessagePagedAsync<OrderResponse>(HttpMethod.Get, $"/api/v3/brokerage/orders?limit={limit}&status={orderStatus.GetEnumMemberValue()}", numberOfPages: numberOfPages);
 
             return httpResponseMessage;
         }
@@ -162,14 +172,14 @@ namespace CoinbaseAdvancedTrade.Services.Orders
             var queryKeyValuePairs = orderStatus.Select(p => new KeyValuePair<string, string>("status", p.GetEnumMemberValue())).ToArray();
             var query = queryBuilder.BuildQuery(queryKeyValuePairs);
 
-            var httpResponseMessage = await SendHttpRequestMessagePagedAsync<OrderResponse>(HttpMethod.Get, $"/orders{query}&limit={limit}", numberOfPages: numberOfPages);
+            var httpResponseMessage = await SendHttpRequestMessagePagedAsync<OrderResponse>(HttpMethod.Get, $"/api/v3/brokerage/orders{query}&limit={limit}", numberOfPages: numberOfPages);
 
             return httpResponseMessage;
         }
 
         public async Task<OrderResponse> GetOrderByIdAsync(string id)
         {
-            return await SendServiceCall<OrderResponse>(HttpMethod.Get, $"/orders/{id}").ConfigureAwait(false);
+            return await SendServiceCall<OrderResponse>(HttpMethod.Get, $"/api/v3/brokerage/orders/{id}").ConfigureAwait(false);
         }
     }
 }
