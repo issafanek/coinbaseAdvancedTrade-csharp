@@ -14,7 +14,7 @@ namespace CoinbaseAdvancedTrade.Services.Orders.Models.Responses
         public FailureReason FailureReason { get; set; }
 
         [JsonProperty("order_id")]
-        public Guid OrderId { get; set; }
+        public /*Guid*/ string OrderId { get; set; }
         [JsonProperty("success_response")]
         public OrderSuccessResponse? SuccessResponse {get; set;}
         [JsonProperty("error_response")]
