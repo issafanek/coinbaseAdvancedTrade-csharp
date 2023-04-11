@@ -8,7 +8,7 @@ namespace CoinbaseAdvancedTrade.Services.Orders.Models.Responses
     public class OrderResponse
     {
         [JsonProperty("success")]
-        bool Success {get; set;}
+        public bool Success {get; set;}
         [JsonConverter(typeof(StringEnumConverter))]
         [JsonProperty("failure_reason")]
         public FailureReason FailureReason { get; set; }
