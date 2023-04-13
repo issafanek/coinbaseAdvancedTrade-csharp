@@ -18,6 +18,8 @@ namespace CoinbaseAdvancedTrade.Network.HttpRequest
 
         private readonly bool sandBox;
 
+        private readonly bool debug = false;
+
         public HttpRequestMessageService(
             IAuthenticator authenticator,
             IClock clock,
@@ -37,7 +39,7 @@ namespace CoinbaseAdvancedTrade.Network.HttpRequest
                 ? ApiUris.ApiUriSandbox
                 : ApiUris.ApiUri;
 
-            Console.WriteLine(new Uri(new Uri(apiUri), requestUri));
+            if(debug) Console.WriteLine(new Uri(new Uri(apiUri), requestUri));
 
 
             var requestMessage = new HttpRequestMessage(httpMethod, new Uri(new Uri(apiUri), requestUri))
@@ -62,7 +64,7 @@ namespace CoinbaseAdvancedTrade.Network.HttpRequest
 
             AddHeaders(requestMessage, signedSignature, timeStamp, true);
 
-            Console.WriteLine(requestMessage.ToString());
+            if(debug) Console.WriteLine(requestMessage.ToString());
             return requestMessage;
         }
 

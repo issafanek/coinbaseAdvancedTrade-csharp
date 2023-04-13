@@ -8,6 +8,7 @@ namespace CoinbaseAdvancedTrade.Network.HttpClient
     {
         private static readonly System.Net.Http.HttpClient Client = new System.Net.Http.HttpClient();
 
+        private static readonly bool debug = false;
         public async Task<HttpResponseMessage> SendAsync(HttpRequestMessage httpRequestMessage)
         {
             return await SendAsync(httpRequestMessage, CancellationToken.None);
@@ -18,14 +19,14 @@ namespace CoinbaseAdvancedTrade.Network.HttpClient
             CancellationToken cancellationToken)
         {
                 var result = await Client.SendAsync(httpRequestMessage, cancellationToken);
-                Console.WriteLine(result);
+                if(debug) Console.WriteLine(result);
                 return result;
         }
 
         public async Task<string> ReadAsStringAsync(HttpResponseMessage httpRequestMessage)
         {
             var result = await httpRequestMessage.Content.ReadAsStringAsync();
-            Console.WriteLine(result);
+            if(debug) Console.WriteLine(result);
             return result;
         }
     }

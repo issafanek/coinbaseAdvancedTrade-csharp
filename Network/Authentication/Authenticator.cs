@@ -8,6 +8,8 @@ namespace CoinbaseAdvancedTrade.Network.Authentication
 {
     public class Authenticator : IAuthenticator
     {
+        private static readonly bool debug = false;
+
         public Authenticator(
             string apiKey,
             string unsignedSignature)//,
@@ -41,12 +43,12 @@ namespace CoinbaseAdvancedTrade.Network.Authentication
             string contentBody = "")
         {
             //timestamp = 1671298666;
-            Console.WriteLine($"secret={secret} requestUri={requestUri}");
+            if(debug) Console.WriteLine($"secret={secret} requestUri={requestUri}");
             //var convertedString = Convert.FromBase64String(secret);
             var convertedString = Encoding.UTF8.GetBytes(secret);
             var prehash = timestamp.ToString("F0", CultureInfo.InvariantCulture) + httpMethod.ToString().ToUpper() + requestUri.Split("?")[0] + contentBody;
             //prehash = "1671299955GET/api/v3/brokerage/products";
-            Console.WriteLine($"prehash = {prehash}");
+            if(debug) Console.WriteLine($"prehash = {prehash}");
             return HashString(prehash, convertedString);
         }
 
