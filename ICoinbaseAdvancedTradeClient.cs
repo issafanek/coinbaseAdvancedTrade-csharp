@@ -3,6 +3,7 @@
 // using CoinbaseAdvancedTrade.Services.Currencies;
 // using CoinbaseAdvancedTrade.Services.Deposits;
 using CoinbaseAdvancedTrade.Services.Fees;
+using CoinbaseAdvancedTrade.Services.Fills;
 // using CoinbaseAdvancedTrade.Services.Fills;
 // using CoinbaseAdvancedTrade.Services.Fundings;
 // using CoinbaseAdvancedTrade.Services.Limits;
@@ -39,6 +40,7 @@ namespace CoinbaseAdvancedTrade
         //IFillsService FillsService { get; }
 
         IFeesService FeesService { get; }
+        IFillsService FillsService { get; }
 
         // IFundingsService FundingsService { get; }
 

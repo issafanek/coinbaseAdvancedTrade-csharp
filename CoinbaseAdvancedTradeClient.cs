@@ -7,6 +7,7 @@ using CoinbaseAdvancedTrade.Network.HttpRequest;
 // using CoinbaseAdvancedTrade.Services.Currencies;
 // using CoinbaseAdvancedTrade.Services.Deposits;
 using CoinbaseAdvancedTrade.Services.Fees;
+using CoinbaseAdvancedTrade.Services.Fills;
 // using CoinbaseAdvancedTrade.Services.Fills;
 // using CoinbaseAdvancedTrade.Services.Fundings;
 // using CoinbaseAdvancedTrade.Services.Limits;
@@ -65,6 +66,7 @@ namespace CoinbaseAdvancedTrade
             //UserAccountService = new UserAccountService(httpClient, httpRequestMessageService);
             //StablecoinConversionsService = new StablecoinConversionsService(httpClient, httpRequestMessageService);
             FeesService = new FeesService(httpClient, httpRequestMessageService);
+            FillsService = new FillsService(httpClient, httpRequestMessageService);
             //ProfilesService = new ProfilesService(httpClient, httpRequestMessageService);
             //WebSocket = new WebSocket.WebSocket(createWebSocketFeed, authenticator, clock);
 
@@ -94,6 +96,7 @@ namespace CoinbaseAdvancedTrade
         // public IFundingsService FundingsService { get; }
 
         public IFeesService FeesService { get; }
+        public IFillsService FillsService { get; }
 
         // public IReportsService ReportsService { get; }
 
