@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="3.2.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.0.2" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\coinbaseAdvancedTrade\coinbaseAdvancedTrade-csharp.csproj" />
+  </ItemGroup>
+
+  <Target Name="CopyAPIkeys" AfterTargets="AfterBuild">
+    <Copy SourceFiles="Sensitive.txt" DestinationFolder="$(OutDir)" ContinueOnError="true" />
+  </Target>
+  <Target Name="CopyAPIkeysOnPublish" AfterTargets="Publish">
+  <Copy SourceFiles="foo.txt" DestinationFolder="$(PublishDir)" />
+</Target>
+
+</Project>
