@@ -41,11 +41,11 @@ public class Tests
         }
     }
 
-    [TestMethod]
-    public void Test1()
-    {
-        Assert.AreEqual("0.001", "0.001","Not Equal");
-    }
+    // [TestMethod]
+    // public void Test1()
+    // {
+    //     Assert.AreEqual("0.001", "0.001","Not Equal");
+    // }
 
     [TestMethod]
     public void TestProductGet()
@@ -53,5 +53,7 @@ public class Tests
         Product = (Task.Run(async () => await CoinBase.ProductsService.GetSingleProductAsync("ETH-USD"))).Result;
         System.Console.WriteLine($"Product ID Fetched: {Product.Id}");
         Assert.AreEqual("ETH-USD", Product.Id, "Product wasn't fetched correctly");
+        Assert.AreEqual("ETH", Product.base_currency_id, "Base Currency wasn't fetched correctly");
+        Assert.AreEqual("USD", Product.quote_currency_id, "Quote Currency wasn't fetched correctly");
     }
 }

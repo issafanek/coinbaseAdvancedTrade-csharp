@@ -22,10 +22,10 @@
   </ItemGroup>
 
   <Target Name="CopyAPIkeys" AfterTargets="AfterBuild">
-    <Copy SourceFiles="Sensitive.txt" DestinationFolder="$(OutDir)" ContinueOnError="true" />
+    <Copy SourceFiles="../Common/Sensitive.txt" DestinationFolder="$(OutDir)" ContinueOnError="true" />
   </Target>
   <Target Name="CopyAPIkeysOnPublish" AfterTargets="Publish">
-  <Copy SourceFiles="foo.txt" DestinationFolder="$(PublishDir)" />
+  <Copy SourceFiles="../Common/Sensitive.txt" DestinationFolder="$(PublishDir)" />
 </Target>
 
 </Project>
