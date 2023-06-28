@@ -39,6 +39,12 @@ namespace CoinbaseAdvancedTrade.Services.Fills.Models
                     price += fill.price * fill.size;
                     sizeInQuoteCurrency += fill.size;
                     commission += fill.commission;
+
+                    trade_ids.Add(fill.trade_id);
+                    entry_ids.Add(fill.entry_id);
+                    trade_times.Add(fill.trade_time);
+                    sequence_timestamps.Add(fill.sequence_timestamp);
+                    liquidity_indicators.Add(fill.liquidity_indicator);
                 }
                 price /= sizeInQuoteCurrency;
 
@@ -53,6 +59,12 @@ namespace CoinbaseAdvancedTrade.Services.Fills.Models
                     price += fill.price * fill.size;
                     sizeInCryptoCurrency += fill.size;
                     commission += fill.commission;
+
+                    trade_ids.Add(fill.trade_id);
+                    entry_ids.Add(fill.entry_id);
+                    trade_times.Add(fill.trade_time);
+                    sequence_timestamps.Add(fill.sequence_timestamp);
+                    liquidity_indicators.Add(fill.liquidity_indicator);
                 }
                 price /= sizeInCryptoCurrency;
 
