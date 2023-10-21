@@ -14,7 +14,6 @@ namespace CoinbaseAdvancedTrade.Examples
         private static CoinbaseAdvancedTradeClient CoinBase;  
 
         static async Task Main(string[] args) {
-
             string apiKey = "";
             string passPhrase = "";
             System.Console.WriteLine(System.IO.File.Exists("Sensitive.txt"));
@@ -39,11 +38,15 @@ namespace CoinbaseAdvancedTrade.Examples
             }
 
 
+            System.Console.WriteLine("--- Accounts Test ---");
+            var accounts = await AccountsGetAsync();
+
             System.Console.WriteLine("--- Product Test ---");
             bool ProductGetTest = await ProductGetAsync("ETH-USD");
             ProductGetTest = await ProductGetAsync("BTC-USD");
             ProductGetTest = await ProductGetAsync("SOL-USD");
             ProductGetTest = await ProductGetAsync("DOGE-USD");
+            ProductGetTest = await ProductGetAsync("ETH-USDC");
             Console.ReadLine();
         }
 
@@ -52,12 +55,27 @@ namespace CoinbaseAdvancedTrade.Examples
             try
             {
                 var Product = await CoinBase.ProductsService.GetSingleProductAsync(id);
-                //System.Console.WriteLine($"Product ID Fetched: {Product.Id}");
-                //Assert.AreEqual("ETH-USD", Product.Id, "Product wasn't fetched correctly");
-                //Assert.AreEqual("ETH", Product.base_currency_id, "Base Currency wasn't fetched correctly");
-                //Assert.AreEqual("USD", Product.quote_currency_id, "Quote Currency wasn't fetched correctly");
-
                 System.Console.WriteLine($"{Product.Id} | Price: {Product.Price}{Product.quote_currency_id} | 24h Change: {Product.price_percentage_change_24h.ToString("0.00")}% | Volume: {Product.volume_24h} | BaseMinSize: {Product.BaseMinSize} | BaseIncrement: {Product.BaseIncrement} | QuoteMinSize: {Product.quote_min_size}{Product.quote_currency_id}");
+
+                return true;
+            }
+            catch(Exception ex)
+            {
+                System.Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
+        public static async Task<bool> AccountsGetAsync()
+        {
+            try
+            {
+                var Accounts = await CoinBase.AccountsService.GetAccountsAsync();
+                
+                foreach(var Account in Accounts)
+                {
+                    System.Console.WriteLine($"{Account.UUID} | {Account.Name} in {Account.Currency} | Default: {Account.Default} | Active: {Account.Active} | Balance: {Account.AvailableBalance.Value}{Account.AvailableBalance.Currency} | Type: {Account.Type} | Ready: {Account.Ready} | Hold: {Account.Hold.Value}{Account.Hold.Currency} | Created: {Account.created_at} | Updated: {Account.updated_at} | Deleted: {Account.deleted_at}");
+                }
 
                 return true;
             }

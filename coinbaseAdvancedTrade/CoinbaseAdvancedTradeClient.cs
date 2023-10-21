@@ -2,7 +2,7 @@
 using CoinbaseAdvancedTrade.Network.Authentication;
 using CoinbaseAdvancedTrade.Network.HttpClient;
 using CoinbaseAdvancedTrade.Network.HttpRequest;
-// using CoinbaseAdvancedTrade.Services.Accounts;
+using CoinbaseAdvancedTrade.Services.Accounts;
 // using CoinbaseAdvancedTrade.Services.CoinbaseAccounts;
 // using CoinbaseAdvancedTrade.Services.Currencies;
 // using CoinbaseAdvancedTrade.Services.Deposits;
@@ -51,7 +51,7 @@ namespace CoinbaseAdvancedTrade
             //var createWebSocketFeed = (Func<IWebSocketFeed>)(() => new WebSocketFeed(sandBox));
             var queryBuilder = new QueryBuilder();
 
-            //AccountsService = new AccountsService(httpClient, httpRequestMessageService);
+            AccountsService = new AccountsService(httpClient, httpRequestMessageService);
             //CoinbaseAccountsService = new CoinbaseAccountsService(httpClient, httpRequestMessageService);
             OrdersService = new OrdersService(httpClient, httpRequestMessageService, queryBuilder);
             //PaymentsService = new PaymentsService(httpClient, httpRequestMessageService);
@@ -73,7 +73,7 @@ namespace CoinbaseAdvancedTrade
             Log.Information("CoinbaseAdvancedTradeClient constructed");
         }
 
-        // public IAccountsService AccountsService { get; }
+        public IAccountsService AccountsService { get; }
 
         // public ICoinbaseAccountsService CoinbaseAccountsService { get; }
 

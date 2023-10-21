@@ -1,4 +1,4 @@
-﻿// using CoinbaseAdvancedTrade.Services.Accounts;
+﻿using CoinbaseAdvancedTrade.Services.Accounts;
 // using CoinbaseAdvancedTrade.Services.CoinbaseAccounts;
 // using CoinbaseAdvancedTrade.Services.Currencies;
 // using CoinbaseAdvancedTrade.Services.Deposits;
@@ -21,7 +21,7 @@ namespace CoinbaseAdvancedTrade
 {
     public interface ICoinbaseAdvancedTradeClient
     {
-        //IAccountsService AccountsService { get; }
+        IAccountsService AccountsService { get; }
 
         //ICoinbaseAccountsService CoinbaseAccountsService { get; }
 
