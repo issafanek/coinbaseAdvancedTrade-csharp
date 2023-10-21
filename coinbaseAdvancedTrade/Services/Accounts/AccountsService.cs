@@ -19,9 +19,16 @@ namespace CoinbaseAdvancedTrade.Services.Accounts
 
         public async Task<List<Account>> GetAccountsAsync()
         {
-            var accountsResponse = await SendServiceCall<AccountsResponse>(HttpMethod.Get, $"/api/v3/brokerage/accounts");
+            var accountsResponse = await SendServiceCall<AccountsResponse>(HttpMethod.Get, $"/api/v3/brokerage/accounts");//.ConfigureAwait(false);
 
             return accountsResponse.Accounts;
+        }
+
+        public async Task<Account> GetAccountAsync(string UUID)
+        {
+            var account = await SendServiceCall<AccountResponse>(HttpMethod.Get, $"/api/v3/brokerage/accounts/{UUID}");//.ConfigureAwait(false);
+
+            return account.Account;
         }
     }
 }

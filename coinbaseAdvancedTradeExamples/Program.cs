@@ -3,6 +3,7 @@ using CoinbaseAdvancedTrade;
 using CoinbaseAdvancedTrade.Network;
 using CoinbaseAdvancedTrade.Network.Authentication;
 using CoinbaseAdvancedTrade.Services.Products.Models;
+using CoinbaseAdvancedTrade.Services.Accounts.Models;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,7 +12,8 @@ namespace CoinbaseAdvancedTrade.Examples
     class Program 
     {
 
-        private static CoinbaseAdvancedTradeClient CoinBase;  
+        private static CoinbaseAdvancedTradeClient CoinBase;
+        private static string TestAccountUUID = "";
 
         static async Task Main(string[] args) {
             string apiKey = "";
@@ -38,14 +40,22 @@ namespace CoinbaseAdvancedTrade.Examples
             }
 
 
-            System.Console.WriteLine("--- Accounts Test ---");
-            var accounts = await AccountsGetAsync();
+            System.Console.WriteLine("--- Get All Accounts Test ---");
+            if(await AccountsGetAsync() == false) System.Console.WriteLine("ERROR: Get All Accounts Test Failed.");;
+            System.Console.WriteLine("--- Get Account by UUID Test ---");
+            if(await AccountsGetByUUIDAsync(TestAccountUUID) == false) System.Console.WriteLine("ERROR: Get Account by UUID Test Failed.");;
+
+            //System.Threading.Thread.Sleep(2000);
 
             System.Console.WriteLine("--- Product Test ---");
             bool ProductGetTest = await ProductGetAsync("ETH-USD");
+            System.Threading.Thread.Sleep(100);
             ProductGetTest = await ProductGetAsync("BTC-USD");
+            System.Threading.Thread.Sleep(100);
             ProductGetTest = await ProductGetAsync("SOL-USD");
+            System.Threading.Thread.Sleep(100);
             ProductGetTest = await ProductGetAsync("DOGE-USD");
+            System.Threading.Thread.Sleep(100);
             ProductGetTest = await ProductGetAsync("ETH-USDC");
             Console.ReadLine();
         }
@@ -76,7 +86,26 @@ namespace CoinbaseAdvancedTrade.Examples
                 {
                     System.Console.WriteLine($"{Account.UUID} | {Account.Name} in {Account.Currency} | Default: {Account.Default} | Active: {Account.Active} | Balance: {Account.AvailableBalance.Value}{Account.AvailableBalance.Currency} | Type: {Account.Type} | Ready: {Account.Ready} | Hold: {Account.Hold.Value}{Account.Hold.Currency} | Created: {Account.created_at} | Updated: {Account.updated_at} | Deleted: {Account.deleted_at}");
                 }
+                TestAccountUUID = Accounts[1].UUID;
+                System.Console.WriteLine($"Test UUID set to {TestAccountUUID}");
 
+                return true;
+            }
+            catch(Exception ex)
+            {
+                System.Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
+        public static async Task<bool> AccountsGetByUUIDAsync(string UUID)
+        {
+            try
+            {
+                System.Console.WriteLine($"Test UUID to be Used: {UUID}");
+                var Acc = await CoinBase.AccountsService.GetAccountAsync(UUID);
+                System.Console.WriteLine($"{Acc.UUID} | {Acc.Name} in {Acc.Currency} | Default: {Acc.Default} | Active: {Acc.Active} | Balance: {Acc.AvailableBalance.Value}{Acc.AvailableBalance.Currency} | Type: {Acc.Type} | Ready: {Acc.Ready} | Hold: {Acc.Hold.Value}{Acc.Hold.Currency} | Created: {Acc.created_at} | Updated: {Acc.updated_at} | Deleted: {Acc.deleted_at}");
+                
                 return true;
             }
             catch(Exception ex)

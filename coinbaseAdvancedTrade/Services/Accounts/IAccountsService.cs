@@ -8,5 +8,6 @@ namespace CoinbaseAdvancedTrade.Services.Accounts
     public interface IAccountsService
     {
         Task<List<Account>> GetAccountsAsync();
+        Task<Account> GetAccountAsync(string UUID);
     }
 }
