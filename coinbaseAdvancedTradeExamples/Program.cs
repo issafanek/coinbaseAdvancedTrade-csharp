@@ -40,26 +40,45 @@ namespace CoinbaseAdvancedTrade.Examples
             }
 
 
-            System.Console.WriteLine("--- Get All Accounts Test ---");
-            if(await AccountsGetAsync() == false) System.Console.WriteLine("ERROR: Get All Accounts Test Failed.");;
-            System.Console.WriteLine("--- Get Account by UUID Test ---");
-            if(await AccountsGetByUUIDAsync(TestAccountUUID) == false) System.Console.WriteLine("ERROR: Get Account by UUID Test Failed.");;
+            // System.Console.WriteLine("--- Get All Accounts Test ---");
+            // if(await AccountsGetAsync() == false) System.Console.WriteLine("ERROR: Get All Accounts Test Failed.");;
+            // System.Console.WriteLine("--- Get Account by UUID Test ---");
+            // if(await AccountsGetByUUIDAsync(TestAccountUUID) == false) System.Console.WriteLine("ERROR: Get Account by UUID Test Failed.");;
 
-            //System.Threading.Thread.Sleep(2000);
+            // //System.Threading.Thread.Sleep(2000);
 
-            System.Console.WriteLine("--- Product Test ---");
-            bool ProductGetTest = await ProductGetAsync("ETH-USD");
-            System.Threading.Thread.Sleep(100);
-            ProductGetTest = await ProductGetAsync("BTC-USD");
-            System.Threading.Thread.Sleep(100);
-            ProductGetTest = await ProductGetAsync("SOL-USD");
-            System.Threading.Thread.Sleep(100);
-            ProductGetTest = await ProductGetAsync("DOGE-USD");
-            System.Threading.Thread.Sleep(100);
-            ProductGetTest = await ProductGetAsync("ETH-USDC");
+            // System.Console.WriteLine("--- Product Test ---");
+            // bool ProductGetTest = await ProductGetAsync("ETH-USD");
+            // System.Threading.Thread.Sleep(100);
+            // ProductGetTest = await ProductGetAsync("BTC-USD");
+            // System.Threading.Thread.Sleep(100);
+            // ProductGetTest = await ProductGetAsync("SOL-USD");
+            // System.Threading.Thread.Sleep(100);
+            // ProductGetTest = await ProductGetAsync("DOGE-USD");
+            // System.Threading.Thread.Sleep(100);
+            // ProductGetTest = await ProductGetAsync("ETH-USDC");
+
+            System.Console.WriteLine("--- Fees Summary Test ---");
+            if(await TransactionFeesAsync() == false) System.Console.WriteLine("ERROR: Get Transaction Fees Summary Failed.");;
             Console.ReadLine();
         }
 
+        public static async Task<bool> TransactionFeesAsync()
+        {
+            try
+            {
+                var TransactionSummary = await CoinBase.FeesService.GetCurrentFeesAsync();
+                System.Console.WriteLine("Trailing 30 day:");
+                System.Console.WriteLine($"Total Volume: {TransactionSummary.TotalVolume} | Total Fees: {TransactionSummary.TotalFees}");// | Fee Tier: {TransactionSummary.TotalFees("0.00")}% | Volume: {Product.volume_24h} | BaseMinSize: {Product.BaseMinSize} | BaseIncrement: {Product.BaseIncrement} | QuoteMinSize: {Product.quote_min_size}{Product.quote_currency_id}");
+                System.Console.WriteLine($"Tier: {TransactionSummary.FeeTier.PricingTier} | From {TransactionSummary.FeeTier.UsdFrom}USD to {TransactionSummary.FeeTier.UsdTo}USD | Taker Fee Rate: {TransactionSummary.FeeTier.TakerFeeRate} | Maker Fee Rate: {TransactionSummary.FeeTier.MakerFeeRate}" );
+                return true;
+            }
+            catch(Exception ex)
+            {
+                System.Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
         public static async Task<bool> ProductGetAsync(string id)
         {
             try

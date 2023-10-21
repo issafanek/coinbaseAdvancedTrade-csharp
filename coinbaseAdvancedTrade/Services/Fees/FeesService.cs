@@ -1,6 +1,7 @@
 ﻿using CoinbaseAdvancedTrade.Network.HttpClient;
 using CoinbaseAdvancedTrade.Network.HttpRequest;
 using CoinbaseAdvancedTrade.Services.Fees.Models;
+using CoinbaseAdvancedTrade.Services.Fees.Models.Responses;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -16,11 +17,11 @@ namespace CoinbaseAdvancedTrade.Services.Fees
         {
         }
 
-        public async Task<Fee> GetCurrentFeesAsync()
+        public async Task<TransactionSummaryResponse> GetCurrentFeesAsync()
         {
-            var fees = await SendServiceCall<Fee>(HttpMethod.Get, "/fees");
+            var transactionSummaryResponse = await SendServiceCall<TransactionSummaryResponse>(HttpMethod.Get, "/api/v3/brokerage/transaction_summary");
 
-            return fees;
+            return transactionSummaryResponse;
         }
     }
 }
