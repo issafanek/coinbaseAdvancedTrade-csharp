@@ -40,23 +40,26 @@ namespace CoinbaseAdvancedTrade.Examples
             }
 
 
-            // System.Console.WriteLine("--- Get All Accounts Test ---");
-            // if(await AccountsGetAsync() == false) System.Console.WriteLine("ERROR: Get All Accounts Test Failed.");;
-            // System.Console.WriteLine("--- Get Account by UUID Test ---");
-            // if(await AccountsGetByUUIDAsync(TestAccountUUID) == false) System.Console.WriteLine("ERROR: Get Account by UUID Test Failed.");;
+            System.Console.WriteLine("--- Get All Accounts Test ---");
+            if(await AccountsGetAsync() == false) System.Console.WriteLine("ERROR: Get All Accounts Test Failed.");
+            System.Threading.Thread.Sleep(4000);
+            System.Console.WriteLine("--- Get Account by UUID Test ---");
+            if(await AccountsGetByUUIDAsync(TestAccountUUID) == false) System.Console.WriteLine("ERROR: Get Account by UUID Test Failed.");;
 
-            // //System.Threading.Thread.Sleep(2000);
+            System.Threading.Thread.Sleep(2000);
 
-            // System.Console.WriteLine("--- Product Test ---");
-            // bool ProductGetTest = await ProductGetAsync("ETH-USD");
-            // System.Threading.Thread.Sleep(100);
-            // ProductGetTest = await ProductGetAsync("BTC-USD");
-            // System.Threading.Thread.Sleep(100);
-            // ProductGetTest = await ProductGetAsync("SOL-USD");
-            // System.Threading.Thread.Sleep(100);
-            // ProductGetTest = await ProductGetAsync("DOGE-USD");
-            // System.Threading.Thread.Sleep(100);
-            // ProductGetTest = await ProductGetAsync("ETH-USDC");
+            System.Console.WriteLine("--- Product Test ---");
+            bool ProductGetTest = await ProductGetAsync("ETH-USD");
+            System.Threading.Thread.Sleep(800);
+            ProductGetTest = await ProductGetAsync("BTC-USD");
+            System.Threading.Thread.Sleep(800);
+            ProductGetTest = await ProductGetAsync("SOL-USD");
+            System.Threading.Thread.Sleep(800);
+            ProductGetTest = await ProductGetAsync("DOGE-USD");
+            System.Threading.Thread.Sleep(800);
+            ProductGetTest = await ProductGetAsync("ETH-USDC");
+
+            System.Threading.Thread.Sleep(2000);
 
             System.Console.WriteLine("--- Fees Summary Test ---");
             if(await TransactionFeesAsync() == false) System.Console.WriteLine("ERROR: Get Transaction Fees Summary Failed.");;
