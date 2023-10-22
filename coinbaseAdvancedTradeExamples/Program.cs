@@ -16,29 +16,18 @@ namespace CoinbaseAdvancedTrade.Examples
         private static string TestAccountUUID = "";
 
         static async Task Main(string[] args) {
-            string apiKey = "";
-            string passPhrase = "";
-            System.Console.WriteLine(System.IO.File.Exists("Sensitive.txt"));
-            if(System.IO.File.Exists("Sensitive.txt"))
+
+            if(String.IsNullOrEmpty(Environment.GetEnvironmentVariable("COINBASE_API_KEY")) || 
+                String.IsNullOrEmpty(Environment.GetEnvironmentVariable("COINBASE_PASSPHRASE")))
             {
-                string [] allLines = System.IO.File.ReadAllLines("Sensitive.txt");
-                if(allLines.Length >= 2)
-                {
-                    apiKey = allLines[0];
-                    passPhrase = allLines[1];
-                }
-                System.Console.WriteLine(apiKey);
-                System.Console.WriteLine(passPhrase);
-                if(string.IsNullOrEmpty(apiKey) || string.IsNullOrEmpty(passPhrase))
-                {
-                    System.Console.WriteLine("API Key or Passphrase not entered correctly.");
-                    return;
-                }
-                var authenticator = new Authenticator(apiKey, passPhrase);
-
-                CoinBase = new CoinbaseAdvancedTradeClient(authenticator);
+                System.Console.WriteLine("Env variables for CB API KEY and PASSPHRASE are not set. Please set COINBASE_API_KEY and COINBASE_PASSPHRASE variables");
+                return;
             }
-
+            
+            var authenticator = new Authenticator(
+                Environment.GetEnvironmentVariable("COINBASE_API_KEY"), 
+                Environment.GetEnvironmentVariable("COINBASE_PASSPHRASE"));
+            CoinBase = new CoinbaseAdvancedTradeClient(authenticator);
 
             System.Console.WriteLine("--- Get All Accounts Test ---");
             if(await AccountsGetAsync() == false) System.Console.WriteLine("ERROR: Get All Accounts Test Failed.");

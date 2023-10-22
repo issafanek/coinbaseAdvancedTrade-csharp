@@ -17,28 +17,17 @@ public class Tests
 
     public Tests()
     {
-        string apiKey = "";
-        string passPhrase = "";
-        System.Console.WriteLine(System.IO.File.Exists("Sensitive.txt"));
-        if(System.IO.File.Exists("Sensitive.txt"))
-        {
-            string [] allLines = System.IO.File.ReadAllLines("Sensitive.txt");
-            if(allLines.Length >= 2)
+        if(String.IsNullOrEmpty(Environment.GetEnvironmentVariable("COINBASE_API_KEY")) || 
+                String.IsNullOrEmpty(Environment.GetEnvironmentVariable("COINBASE_PASSPHRASE")))
             {
-                apiKey = allLines[0];
-                passPhrase = allLines[1];
-            }
-            System.Console.WriteLine(apiKey);
-            System.Console.WriteLine(passPhrase);
-            if(string.IsNullOrEmpty(apiKey) || string.IsNullOrEmpty(passPhrase))
-            {
-                System.Console.WriteLine("API Key or Passphrase not entered correctly.");
+                System.Console.WriteLine("Env variables for CB API KEY and PASSPHRASE are not set. Please set COINBASE_API_KEY and COINBASE_PASSPHRASE variables");
                 return;
             }
-            var authenticator = new Authenticator(apiKey, passPhrase);
-
+            
+            var authenticator = new Authenticator(
+                Environment.GetEnvironmentVariable("COINBASE_API_KEY"), 
+                Environment.GetEnvironmentVariable("COINBASE_PASSPHRASE"));
             CoinBase = new CoinbaseAdvancedTradeClient(authenticator);
-        }
     }
 
     // [TestMethod]
