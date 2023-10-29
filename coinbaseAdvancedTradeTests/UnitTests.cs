@@ -14,6 +14,7 @@ public class Tests
 {
     private readonly CoinbaseAdvancedTradeClient CoinBase;
     public Product Product = new Product();
+    public string TestAccountID = "";
 
     public Tests()
     {
@@ -44,5 +45,27 @@ public class Tests
         Assert.AreEqual("ETH-USD", Product.Id, "Product wasn't fetched correctly");
         Assert.AreEqual("ETH", Product.base_currency_id, "Base Currency wasn't fetched correctly");
         Assert.AreEqual("USD", Product.quote_currency_id, "Quote Currency wasn't fetched correctly");
+        Assert.AreNotEqual(0, Product.Price, "Price was not fetched correctly");
+    }
+
+    [TestMethod]
+    public void TestAccountsGet()
+    {
+        System.Threading.Thread.Sleep(2000);
+        var Accounts = (Task.Run(async () => await CoinBase.AccountsService.GetAccountsAsync())).Result;
+        //System.Console.WriteLine($"Accounts ID Fetched: {Product.Id}");
+        Assert.IsTrue(Accounts.Count > 0, "Accounts were not fetched - number of accounts is zero or null.");
+    }
+
+    [TestMethod]
+    public void TestAccountGetByUUID()
+    {
+        System.Threading.Thread.Sleep(1000);
+        var Accounts = (Task.Run(async () => await CoinBase.AccountsService.GetAccountsAsync())).Result;
+        TestAccountID = Accounts[0].UUID;
+        System.Threading.Thread.Sleep(1000);
+        var TestAccount = (Task.Run(async () => await CoinBase.AccountsService.GetAccountAsync(TestAccountID))).Result;
+        Assert.IsFalse(String.IsNullOrEmpty(TestAccount.Name),"Account Name is Null or Empty");
+        Assert.IsTrue(TestAccount.Name.Length > 0, $"Account {TestAccountID} was not fetched.");
     }
 }
