@@ -1,3 +1,0 @@
-/home/issa/fun/coinbaseAdvancedTrade-csharp/coinbaseAdvancedTradeExamples/Program.cs(71,57): error CS1003: Syntax error, '}' expected [/home/issa/fun/coinbaseAdvancedTrade-csharp/coinbaseAdvancedTradeExamples/coinbaseAdvancedTradeExamples.csproj]
-/home/issa/fun/coinbaseAdvancedTrade-csharp/coinbaseAdvancedTradeExamples/Program.cs(71,50): error CS1073: Unexpected token ']' [/home/issa/fun/coinbaseAdvancedTrade-csharp/coinbaseAdvancedTradeExamples/coinbaseAdvancedTradeExamples.csproj]
-/home/issa/fun/coinbaseAdvancedTrade-csharp/coinbaseAdvancedTradeExamples/Program.cs(71,58): error CS1056: Unexpected character '\' [/home/issa/fun/coinbaseAdvancedTrade-csharp/coinbaseAdvancedTradeExamples/coinbaseAdvancedTradeExamples.csproj]
