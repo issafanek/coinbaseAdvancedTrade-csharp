@@ -3,6 +3,7 @@ using CoinbaseAdvancedTrade;
 using CoinbaseAdvancedTrade.Network;
 using CoinbaseAdvancedTrade.Network.Authentication;
 using CoinbaseAdvancedTrade.Services.Products.Models;
+using CoinbaseAdvancedTrade.Services.Products.Types;
 using CoinbaseAdvancedTrade.Services.Accounts.Models;
 using System.Threading;
 using System.Threading.Tasks;
@@ -51,8 +52,33 @@ namespace CoinbaseAdvancedTrade.Examples
             System.Threading.Thread.Sleep(2000);
 
             System.Console.WriteLine("--- Fees Summary Test ---");
-            if(await TransactionFeesAsync() == false) System.Console.WriteLine("ERROR: Get Transaction Fees Summary Failed.");;
+            if(await TransactionFeesAsync() == false) System.Console.WriteLine("ERROR: Get Transaction Fees Summary Failed.");
+
+            System.Threading.Thread.Sleep(2000);
+            System.Console.WriteLine("--- Historicals ---");
+            if(await getHistoricalsAsync("ETH-USD", DateTime.UtcNow.AddDays(-2), DateTime.UtcNow, CandleGranularity.ONE_MINUTE) == false) System.Console.WriteLine("ERROR: Get historicals Failed.");
             Console.ReadLine();
+        }
+
+        public static async Task<bool> getHistoricalsAsync(string pair, DateTime start, DateTime end, CandleGranularity granularity)
+        {
+            try
+            {
+                System.Console.WriteLine($"Getting historicals for {pair} between {start.ToString("yyyy-MM-dd HH:mm:ss")} and {start.ToString("yyyy-MM-dd HH:mm:ss")}");
+                var history = await CoinBase.ProductsService.GetHistoricRatesAsync(pair, start, end, granularity);
+                var counter = 1;
+                foreach(var candle in history)
+                {
+                    System.Console.WriteLine($"[{counter}]\t{candle.Time}: {candle.Low}  {candle.High}  {candle.Open}  {candle.Close}  {candle.Volume}");
+                    counter++;
+                }
+                return true;
+            }
+            catch(Exception ex)
+            {
+                System.Console.WriteLine(ex.Message);
+                return false;
+            }
         }
 
         public static async Task<bool> TransactionFeesAsync()

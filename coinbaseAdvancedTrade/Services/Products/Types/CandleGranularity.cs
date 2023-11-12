@@ -2,11 +2,14 @@
 {
     public enum CandleGranularity
     {
-        Minutes1 = 60,
-        Minutes5 = 300,
-        Minutes15 = 900,
-        Hour1 = 3600,
-        Hour6 = 21600,
-        Hour24 = 86400
+        UNKNOWN_GRANUALARITY = 0,
+        ONE_MINUTE = 60,
+        FIVE_MINUTE = 300,
+        FIFTEEN_MINUTE = 900,
+        THIRTY_MINUTE = 1800,
+        ONE_HOUR = 3600,
+        TWO_HOUR = 7200,
+        SIX_HOUR = 21600,
+        ONE_DAY = 86400
     }
 }
