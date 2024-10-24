@@ -8,11 +8,23 @@
     <Nullable>enable</Nullable>
     <UserSecretsId>647e319c-fc3f-4ce2-b97f-0bd6872f446a</UserSecretsId>
     <!-- <SelfContained>true</SelfContained> -->
+
+    <PackageId>IF_CoinbaseAdvancedTrade_cSharp</PackageId>
+    <Version>0.8.0</Version>
+    <Authors>Issa Fanek</Authors>
+    <Company>Fanek Solutions</Company>
+    <Description>C# Wrapper for Coinbase Advanced Trade API</Description>
+    <PackRelease>true</PackRelease>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="Serilog" Version="2.12.0" />
+
+    <None Include="../README.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
 </Project>

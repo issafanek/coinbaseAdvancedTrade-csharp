@@ -11,6 +11,7 @@ using CoinbaseAdvancedTrade.Services.Products.Models.Responses;
 using CoinbaseAdvancedTrade.Services.Products.Types;
 using CoinbaseAdvancedTrade.Shared.Utilities.Queries;
 using CoinbaseAdvancedTrade.Shared.Utilities.Extensions;
+using Serilog;
 
 namespace CoinbaseAdvancedTrade.Services.Products
 {
@@ -73,69 +74,76 @@ namespace CoinbaseAdvancedTrade.Services.Products
             DateTime end,
             CandleGranularity granularity)
         {
-            const int maxPeriods = 300;
+            //const int maxPeriods = 300;
+            const int maxNumOfCandlesPerRequest = 300;
+
+            //calculate number of requests..
+            long startInUnixSeconds = GetUnixTimeInSeconds(start);
+            long endInUnixSeconds = GetUnixTimeInSeconds(end);
+            int numOfRequests = (int)(Math.Ceiling((float)(endInUnixSeconds - startInUnixSeconds) / (float)maxNumOfCandlesPerRequest));
+            int incrementTime = (int)granularity * maxNumOfCandlesPerRequest;
 
             var candleList = new List<Candle>();
 
-            DateTime? batchEnd = end;
-            DateTime batchStart;
-
-            var maxBatchPeriod = (int)granularity * maxPeriods;
             var requests = 0;
-
-            do
+            for(long currTime = startInUnixSeconds; currTime <= endInUnixSeconds; currTime += incrementTime)
             {
-                if (batchEnd == null)
-                {
-                    break;
-                }
-
-                batchStart = batchEnd.Value.AddSeconds(-maxBatchPeriod);
-                if (batchStart < start) batchStart = start;
-
-
                 if (requests >= 3)
                 {
                     await Task.Delay(1000);
                     requests = 0;
                 }
-                candleList.AddRange(await GetHistoricRatesAsync(productPair, batchStart, batchEnd.Value, (int)granularity));
-                requests++;
 
-                var previousBatchEnd = batchEnd;
-                batchEnd = candleList.LastOrDefault()?.Time;
-
-                if (previousBatchEnd == batchEnd)
+                long endTimestamp = currTime + incrementTime - (int)granularity;
+                if(endTimestamp >= endInUnixSeconds)
                 {
-                    break;
+                    endTimestamp = endInUnixSeconds;
                 }
-            } while (batchStart > start);
-
-            var reversedCandleList = new List<Candle>();
-            for(int i=candleList.Count-1; i>=0;i--)
-            {
-                reversedCandleList.Add(candleList[i]);
+                Log.Debug($"Range: {GetUtcDateTimeFromUnixTimestamp(currTime).ToString("yyyy-MM-dd HH:mm:ss")} to {GetUtcDateTimeFromUnixTimestamp(endTimestamp).ToString("yyyy-MM-dd HH:mm:ss")}");
+                candleList.AddRange(await GetHistoricRatesInternalAsync(productPair, currTime, endTimestamp , granularity));
             }
 
-            return reversedCandleList;
+            return candleList;
+
+            // var reversedCandleList = new List<Candle>();
+            // for(int i=candleList.Count-1; i>=0;i--)
+            // {
+            //     reversedCandleList.Add(candleList[i]);
+            // }
+
+            // return reversedCandleList;
         }
         private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-
-        private async Task<IList<Candle>> GetHistoricRatesAsync(
-            string productId,
-            DateTime start,
-            DateTime end,
-            int granularity)
+        private static long GetUnixTimeInSeconds(DateTime dt)
         {
-            var isoStart = ((Int32)(DateExtensions.ToTimeStamp(start))).ToString();//start.ToString("yyyy-MM-ddTHH:mm:ss.fffK");
-            var isoEnd = ((Int32)(DateExtensions.ToTimeStamp(end))).ToString();//end.ToString("yyyy-MM-ddTHH:mm:ss.fffK");
+            return ((DateTimeOffset)dt).ToUnixTimeSeconds();
+        }
+        private static DateTime GetUtcDateTimeFromUnixTimestamp(long unixTimestamp)
+        {
+            var offset = DateTimeOffset.FromUnixTimeSeconds(unixTimestamp);
+            return offset.UtcDateTime;
+        }
+        private async Task<IList<Candle>> GetHistoricRatesInternalAsync(
+            string productId,
+            long startInUnixSeconds,
+            long endInUnixSeconds,
+            CandleGranularity granularity)
+        {
+            //var isoStart = ((Int32)(DateExtensions.ToTimeStamp(start))).ToString();//start.ToString("yyyy-MM-ddTHH:mm:ss.fffK");
+            //var isoEnd = ((Int32)(DateExtensions.ToTimeStamp(end))).ToString();//end.ToString("yyyy-MM-ddTHH:mm:ss.fffK");
+
+            // var unixTimestampStart = GetUnixTimeInSeconds(start);
+            // var unixTimestampEnd = GetUnixTimeInSeconds(end);
+            // System.Console.WriteLine(unixTimestampStart);
+            // System.Console.WriteLine(unixTimestampEnd);
 
             var queryString = queryBuilder.BuildQuery(
-                new KeyValuePair<string, string>("start", isoStart),
-                new KeyValuePair<string, string>("end", isoEnd),
-                new KeyValuePair<string, string>("granularity", "1"));//granularity.ToString()));
+                new KeyValuePair<string, string>("start", startInUnixSeconds.ToString()),
+                new KeyValuePair<string, string>("end", endInUnixSeconds.ToString()),
+                new KeyValuePair<string, string>("granularity", Enum.GetName(typeof(CandleGranularity), granularity)));
 
-            CandleListResponse response = await SendServiceCall<CandleListResponse>(HttpMethod.Get, $"/api/v3/brokerage/products/{productId}/candles" + queryString).ConfigureAwait(false);
+            //System.Console.WriteLine($"/api/v3/brokerage/products/{productId}/candles{queryString}");
+            CandleListResponse response = await SendServiceCall<CandleListResponse>(HttpMethod.Get, $"/api/v3/brokerage/products/{productId}/candles{queryString}").ConfigureAwait(false);
             //System.Console.WriteLine(response.candles[0].Open);
             IList<Candle> Candles = new List<Candle>();
             //for(int i= response.candles.Count - 1; i>=0; i--)
@@ -153,7 +161,15 @@ namespace CoinbaseAdvancedTrade.Services.Products
                 });
             }
 
-            return Candles;//await SendServiceCall<IList<Candle>>(HttpMethod.Get, $"/api/v3/brokerage/products/{productId}/candles" + queryString).ConfigureAwait(false);
+            //return Candles;//await SendServiceCall<IList<Candle>>(HttpMethod.Get, $"/api/v3/brokerage/products/{productId}/candles" + queryString).ConfigureAwait(false);
+
+            var reversedCandleList = new List<Candle>();
+            for(int i=Candles.Count-1; i>=0;i--)
+            {
+                reversedCandleList.Add(Candles[i]);
+            }
+
+            return reversedCandleList;
         }
 
         private ProductsOrderBookResponse ConvertProductOrderBookResponse(

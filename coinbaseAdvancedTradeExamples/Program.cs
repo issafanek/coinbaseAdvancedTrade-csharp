@@ -3,6 +3,7 @@ using CoinbaseAdvancedTrade;
 using CoinbaseAdvancedTrade.Network;
 using CoinbaseAdvancedTrade.Network.Authentication;
 using CoinbaseAdvancedTrade.Services.Products.Models;
+using CoinbaseAdvancedTrade.Services.Products.Types;
 using CoinbaseAdvancedTrade.Services.Accounts.Models;
 using CoinbaseAdvancedTrade.Services.Fills.Models;
 using System.Threading;
@@ -17,29 +18,18 @@ namespace CoinbaseAdvancedTrade.Examples
         private static string TestAccountUUID = "";
 
         static async Task Main(string[] args) {
-            string apiKey = "";
-            string passPhrase = "";
-            System.Console.WriteLine(System.IO.File.Exists("Sensitive.txt"));
-            if(System.IO.File.Exists("Sensitive.txt"))
+
+            if(String.IsNullOrEmpty(Environment.GetEnvironmentVariable("COINBASE_API_KEY")) || 
+                String.IsNullOrEmpty(Environment.GetEnvironmentVariable("COINBASE_PASSPHRASE")))
             {
-                string [] allLines = System.IO.File.ReadAllLines("Sensitive.txt");
-                if(allLines.Length >= 2)
-                {
-                    apiKey = allLines[0];
-                    passPhrase = allLines[1];
-                }
-                System.Console.WriteLine(apiKey);
-                System.Console.WriteLine(passPhrase);
-                if(string.IsNullOrEmpty(apiKey) || string.IsNullOrEmpty(passPhrase))
-                {
-                    System.Console.WriteLine("API Key or Passphrase not entered correctly.");
-                    return;
-                }
-                var authenticator = new Authenticator(apiKey, passPhrase);
-
-                CoinBase = new CoinbaseAdvancedTradeClient(authenticator);
+                System.Console.WriteLine("Env variables for CB API KEY and PASSPHRASE are not set. Please set COINBASE_API_KEY and COINBASE_PASSPHRASE variables");
+                return;
             }
-
+            
+            var authenticator = new Authenticator(
+                Environment.GetEnvironmentVariable("COINBASE_API_KEY"), 
+                Environment.GetEnvironmentVariable("COINBASE_PASSPHRASE"));
+            CoinBase = new CoinbaseAdvancedTradeClient(authenticator);
 
             System.Console.WriteLine("--- Get All Accounts Test ---");
             if(await AccountsGetAsync() == false) System.Console.WriteLine("ERROR: Get All Accounts Test Failed.");
@@ -63,13 +53,59 @@ namespace CoinbaseAdvancedTrade.Examples
             System.Threading.Thread.Sleep(2000);
 
             System.Console.WriteLine("--- Fees Summary Test ---");
-            if(await TransactionFeesAsync() == false) System.Console.WriteLine("ERROR: Get Transaction Fees Summary Failed.");;
+            if(await TransactionFeesAsync() == false) System.Console.WriteLine("ERROR: Get Transaction Fees Summary Failed.");
+
+            System.Threading.Thread.Sleep(2000);
+            System.Console.WriteLine("--- Historicals ---");
+            if(await getHistoricalsAsync("ETH-USD", DateTime.UtcNow.AddDays(-2), DateTime.UtcNow, CandleGranularity.ONE_MINUTE) == false) System.Console.WriteLine("ERROR: Get historicals Failed.");
             
             System.Console.WriteLine("--- Order fill Test ---");
             if(await OrderFillTest() == false) System.Console.WriteLine("ERROR: Get Transaction Fees Summary Failed.");;
             
             
             Console.ReadLine();
+        }
+
+        public static async Task<bool> getHistoricalsAsync(string pair, DateTime start, DateTime end, CandleGranularity granularity)
+        {
+            try
+            {
+                System.Console.WriteLine($"Getting historicals for {pair} between {start.ToString("yyyy-MM-dd HH:mm:ss")} and {start.ToString("yyyy-MM-dd HH:mm:ss")}");
+                var history = await CoinBase.ProductsService.GetHistoricRatesAsync(pair, start, end, granularity);
+                var counter = 1;
+                foreach(var candle in history)
+                {
+                    System.Console.WriteLine($"[{counter}]\t{candle.Time}: {candle.Low}  {candle.High}  {candle.Open}  {candle.Close}  {candle.Volume}");
+                    counter++;
+                }
+                return true;
+            }
+            catch(Exception ex)
+            {
+                System.Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
+        public static async Task<bool> getHistoricalsAsync(string pair, DateTime start, DateTime end, CandleGranularity granularity)
+        {
+            try
+            {
+                System.Console.WriteLine($"Getting historicals for {pair} between {start.ToString("yyyy-MM-dd HH:mm:ss")} and {start.ToString("yyyy-MM-dd HH:mm:ss")}");
+                var history = await CoinBase.ProductsService.GetHistoricRatesAsync(pair, start, end, granularity);
+                var counter = 1;
+                foreach(var candle in history)
+                {
+                    System.Console.WriteLine($"[{counter}]\t{candle.Time}: {candle.Low}  {candle.High}  {candle.Open}  {candle.Close}  {candle.Volume}");
+                    counter++;
+                }
+                return true;
+            }
+            catch(Exception ex)
+            {
+                System.Console.WriteLine(ex.Message);
+                return false;
+            }
         }
 
         public static async Task<bool> OrderFillTest()
