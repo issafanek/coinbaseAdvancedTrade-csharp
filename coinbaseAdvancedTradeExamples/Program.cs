@@ -59,6 +59,7 @@ namespace CoinbaseAdvancedTrade.Examples
             System.Console.WriteLine("--- Historicals ---");
             if(await getHistoricalsAsync("ETH-USD", DateTime.UtcNow.AddDays(-2), DateTime.UtcNow, CandleGranularity.ONE_MINUTE) == false) System.Console.WriteLine("ERROR: Get historicals Failed.");
             
+            System.Threading.Thread.Sleep(2000);
             System.Console.WriteLine("--- Order fill Test ---");
             if(await OrderFillTest() == false) System.Console.WriteLine("ERROR: Get Transaction Fees Summary Failed.");;
             
@@ -87,26 +88,26 @@ namespace CoinbaseAdvancedTrade.Examples
             }
         }
 
-        public static async Task<bool> getHistoricalsAsync(string pair, DateTime start, DateTime end, CandleGranularity granularity)
-        {
-            try
-            {
-                System.Console.WriteLine($"Getting historicals for {pair} between {start.ToString("yyyy-MM-dd HH:mm:ss")} and {start.ToString("yyyy-MM-dd HH:mm:ss")}");
-                var history = await CoinBase.ProductsService.GetHistoricRatesAsync(pair, start, end, granularity);
-                var counter = 1;
-                foreach(var candle in history)
-                {
-                    System.Console.WriteLine($"[{counter}]\t{candle.Time}: {candle.Low}  {candle.High}  {candle.Open}  {candle.Close}  {candle.Volume}");
-                    counter++;
-                }
-                return true;
-            }
-            catch(Exception ex)
-            {
-                System.Console.WriteLine(ex.Message);
-                return false;
-            }
-        }
+        // public static async Task<bool> getHistoricalsAsync(string pair, DateTime start, DateTime end, CandleGranularity granularity)
+        // {
+        //     try
+        //     {
+        //         System.Console.WriteLine($"Getting historicals for {pair} between {start.ToString("yyyy-MM-dd HH:mm:ss")} and {start.ToString("yyyy-MM-dd HH:mm:ss")}");
+        //         var history = await CoinBase.ProductsService.GetHistoricRatesAsync(pair, start, end, granularity);
+        //         var counter = 1;
+        //         foreach(var candle in history)
+        //         {
+        //             System.Console.WriteLine($"[{counter}]\t{candle.Time}: {candle.Low}  {candle.High}  {candle.Open}  {candle.Close}  {candle.Volume}");
+        //             counter++;
+        //         }
+        //         return true;
+        //     }
+        //     catch(Exception ex)
+        //     {
+        //         System.Console.WriteLine(ex.Message);
+        //         return false;
+        //     }
+        // }
 
         public static async Task<bool> OrderFillTest()
         {
