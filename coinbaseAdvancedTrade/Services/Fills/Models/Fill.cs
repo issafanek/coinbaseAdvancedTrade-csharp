@@ -28,5 +28,6 @@ namespace CoinbaseAdvancedTrade.Services.Fills.Models
         public string user_id { get; set; }
         [JsonConverter(typeof(StringEnumConverter))]
         public Side side { get; set; }
+        public string retail_portfolio_id { get; set; }
     }
 }
