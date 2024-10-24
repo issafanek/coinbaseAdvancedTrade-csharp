@@ -77,17 +77,23 @@ namespace CoinbaseAdvancedTrade.Services.Products
             //const int maxPeriods = 300;
             const int maxNumOfCandlesPerRequest = 300;
 
+            start = start.AddSeconds(-start.Second);
+            end = end.AddSeconds(-end.Second);
+
             //calculate number of requests..
             long startInUnixSeconds = GetUnixTimeInSeconds(start);
             long endInUnixSeconds = GetUnixTimeInSeconds(end);
-            int numOfRequests = (int)(Math.Ceiling((float)(endInUnixSeconds - startInUnixSeconds) / (float)maxNumOfCandlesPerRequest));
-            int incrementTime = (int)granularity * maxNumOfCandlesPerRequest;
+            //int numOfRequests = (int)(Math.Ceiling((float)(endInUnixSeconds - startInUnixSeconds) / (float)maxNumOfCandlesPerRequest));
+            int incrementTime = (int)granularity * (maxNumOfCandlesPerRequest - 1); //decrease by one to ensure that we don't have any gaps between the requests
 
             var candleList = new List<Candle>();
 
             var requests = 0;
             for(long currTime = startInUnixSeconds; currTime <= endInUnixSeconds; currTime += incrementTime)
             {
+                System.Console.WriteLine($"{currTime} to {currTime + incrementTime - (int)granularity} --> Add {incrementTime}");
+                System.Console.WriteLine($"{ GetUtcDateTimeFromUnixTimestamp(currTime)} to {GetUtcDateTimeFromUnixTimestamp(currTime + incrementTime - (int)granularity)} --> Add {incrementTime}");
+                
                 if (requests >= 3)
                 {
                     await Task.Delay(1000);
@@ -101,6 +107,9 @@ namespace CoinbaseAdvancedTrade.Services.Products
                 }
                 Log.Debug($"Range: {GetUtcDateTimeFromUnixTimestamp(currTime).ToString("yyyy-MM-dd HH:mm:ss")} to {GetUtcDateTimeFromUnixTimestamp(endTimestamp).ToString("yyyy-MM-dd HH:mm:ss")}");
                 candleList.AddRange(await GetHistoricRatesInternalAsync(productPair, currTime, endTimestamp , granularity));
+
+                //debugging - remove
+                //return candleList;
             }
 
             return candleList;
