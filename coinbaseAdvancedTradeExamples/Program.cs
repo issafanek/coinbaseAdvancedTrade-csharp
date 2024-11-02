@@ -92,7 +92,8 @@ namespace CoinbaseAdvancedTrade.Examples
         {
             try
             {
-                string OrderUUID = "b3434b06-344c-42da-b252-67672e89e064";
+                //string OrderUUID = "b3434b06-344c-42da-b252-67672e89e064";
+                string OrderUUID = "ca6a91c6-0971-4026-ba96-001e848b7544";
                 var OrderFillSummary = await CoinBase.FillsService.GetFillsByOrderIDAsync(OrderUUID);
                 int countOfFills = ((List<Fill>)(OrderFillSummary)).Count;
                 System.Console.WriteLine($"Order to get fills for: {OrderUUID}");
