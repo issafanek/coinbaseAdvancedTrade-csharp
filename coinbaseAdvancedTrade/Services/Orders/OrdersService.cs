@@ -177,9 +177,9 @@ namespace CoinbaseAdvancedTrade.Services.Orders
             return httpResponseMessage;
         }
 
-        public async Task<OrderResponse> GetOrderByIdAsync(string id)
+        public async Task<HistoricalOrderResponse> GetOrderByIdAsync(string id)
         {
-            return await SendServiceCall<OrderResponse>(HttpMethod.Get, $"/api/v3/brokerage/orders/{id}").ConfigureAwait(false);
+            return await SendServiceCall<HistoricalOrderResponse>(HttpMethod.Get, $"/api/v3/brokerage/orders/historical/{id}").ConfigureAwait(false);
         }
     }
 }

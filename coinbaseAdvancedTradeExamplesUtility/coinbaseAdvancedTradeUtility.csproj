@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\coinbaseAdvancedTrade\coinbaseAdvancedTrade-csharp.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+    <Target Name="CopyAPIkeys" AfterTargets="AfterBuild">
+      <Copy SourceFiles="../Common/Sensitive.txt" DestinationFolder="$(OutDir)" ContinueOnError="true" />
+      <Copy SourceFiles="../Common/Sensitive.txt" DestinationFolder="." ContinueOnError="true" />
+    </Target>
+    <Target Name="CopyAPIkeysOnPublish" AfterTargets="Publish">
+    <Copy SourceFiles="../Common/Sensitive.txt" DestinationFolder="$(PublishDir)" />
+  </Target>
+
+</Project>

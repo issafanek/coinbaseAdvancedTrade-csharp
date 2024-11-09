@@ -8,7 +8,7 @@ namespace CoinbaseAdvancedTrade.Network.HttpClient
     {
         private static readonly System.Net.Http.HttpClient Client = new System.Net.Http.HttpClient();
 
-        private static readonly bool debug = false;
+        private static readonly bool debug = true;
         public async Task<HttpResponseMessage> SendAsync(HttpRequestMessage httpRequestMessage)
         {
             return await SendAsync(httpRequestMessage, CancellationToken.None);

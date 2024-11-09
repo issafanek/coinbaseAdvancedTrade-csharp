@@ -6,17 +6,23 @@ namespace CoinbaseAdvancedTrade.Services.Orders.Types
     {
         [EnumMember(Value = "all")]
         All,
-        [EnumMember(Value = "pending")]
+        [EnumMember(Value = "PENDING")]
         Pending,
-        [EnumMember(Value = "active")]
-        Active,
-        [EnumMember(Value = "rejected")]
-        Rejected,
-        [EnumMember(Value = "open")]
+        [EnumMember(Value = "OPEN")]
         Open,
-        [EnumMember(Value = "done")]
-        Done,
-        [EnumMember(Value = "settled")]
-        Settled
+        [EnumMember(Value = "FILLED")]
+        Filled,
+        [EnumMember(Value = "CANCELLED")]
+        Cancelled,
+        [EnumMember(Value = "EXPIRED")]
+        Expired,
+        [EnumMember(Value = "FAILED")]
+        Failed,
+        [EnumMember(Value = "UNKNOWN_ORDER_STATUS")]
+        Unkown,
+        [EnumMember(Value = "QUEUED")]
+        Queued,
+        [EnumMember(Value = "CANCEL_QUEUED")]
+        CancelQueued,
     }
 }

@@ -50,7 +50,7 @@ namespace CoinbaseAdvancedTrade.Services.Orders
             int limit = 100,
             int numberOfPages = 0);
 
-        Task<OrderResponse> GetOrderByIdAsync(string id);
+        Task<HistoricalOrderResponse> GetOrderByIdAsync(string id);
 
         Task<CancelOrderResponse> CancelAllOrdersAsync();
 
