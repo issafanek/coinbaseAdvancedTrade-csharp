@@ -39,8 +39,8 @@ namespace CoinbaseAdvancedTrade.Services.Products.Models
 [JsonProperty("status")]
         public string Status { get; set; }
 
-        public string quote_min_size { get; set; }
-        public string quote_max_size { get; set; }
+        public decimal quote_min_size { get; set; }
+        public decimal quote_max_size { get; set; }
         public bool watched { get; set; }
         public bool is_disabled { get; set; }
         [JsonProperty("new")]
