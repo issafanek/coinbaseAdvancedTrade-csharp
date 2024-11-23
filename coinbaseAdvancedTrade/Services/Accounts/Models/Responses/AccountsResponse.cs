@@ -10,7 +10,7 @@ namespace CoinbaseAdvancedTrade.Services.Accounts.Models.Responses
     public class Balance
     {
         [JsonProperty("value")]
-        public string Value { get; set; }
+        public decimal Value { get; set; }
         [JsonProperty("currency")]
         public string Currency { get; set; }
     }
