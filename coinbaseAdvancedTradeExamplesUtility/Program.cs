@@ -20,16 +20,16 @@ namespace CoinbaseAdvancedTrade.Utility
 
         static async Task Main(string[] args) {
 
-            if(String.IsNullOrEmpty(Environment.GetEnvironmentVariable("COINBASE_API_KEY")) || 
-                String.IsNullOrEmpty(Environment.GetEnvironmentVariable("COINBASE_PASSPHRASE")))
+            if(String.IsNullOrEmpty(Environment.GetEnvironmentVariable("IF_COINBASE_API_KEY")) || 
+                String.IsNullOrEmpty(Environment.GetEnvironmentVariable("IF_COINBASE_API_SECRET")))
             {
                 System.Console.WriteLine("Env variables for CB API KEY and PASSPHRASE are not set. Please set COINBASE_API_KEY and COINBASE_PASSPHRASE variables");
                 return;
             }
             
             var authenticator = new Authenticator(
-                Environment.GetEnvironmentVariable("COINBASE_API_KEY"), 
-                Environment.GetEnvironmentVariable("COINBASE_PASSPHRASE"));
+                Environment.GetEnvironmentVariable("IF_COINBASE_API_KEY"), 
+                Environment.GetEnvironmentVariable("IF_COINBASE_API_SECRET"));
             CoinBase = new CoinbaseAdvancedTradeClient(authenticator);
 
             System.Console.WriteLine("Enter Order ID to get info: ");

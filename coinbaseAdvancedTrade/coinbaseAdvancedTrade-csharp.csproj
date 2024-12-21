@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <RootNamespace>coinbaseAdvancedTrade_csharp</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -10,7 +10,7 @@
     <!-- <SelfContained>true</SelfContained> -->
 
     <PackageId>IF_CoinbaseAdvancedTrade_cSharp</PackageId>
-    <Version>0.8.0</Version>
+    <Version>0.9.0</Version>
     <Authors>Issa Fanek</Authors>
     <Company>Fanek Solutions</Company>
     <Description>C# Wrapper for Coinbase Advanced Trade API</Description>
